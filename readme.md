@@ -1,4 +1,4 @@
-# today-ilearned
+# node-easymvc
 
 > *Seeing much, suffering much, and studying much, are the three pillars of learning.*
 
