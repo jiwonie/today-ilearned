@@ -1,4 +1,4 @@
-# node-easymvc
+# php-easymvc (restful, orm)
 
 > *Seeing much, suffering much, and studying much, are the three pillars of learning.*
 
