@@ -1,0 +1,45 @@
+# ------------------------------------ 보안 ------------------------------------
+# 폴더 구조 미표시
+Options All -Indexes
+
+# 서버 정보 미표시
+ServerSignature Off
+
+# 기본 인코딩
+AddDefaultCharset utf-8
+AddCharset utf-8 .html .css .js .xml .json .rss .php .jsonp
+
+# 접근 금지 파일
+<files *.ini>
+    order allow,deny
+    deny from all
+</files>
+
+# .htaccess 보호
+<Files ~ "^.*\.([Hh][Tt])">
+	Order allow,deny
+	Deny from all
+	Satisfy all
+</Files>
+
+# 서버 경로 제외하여 접근 가능
+RewriteCond %{REQUEST_URI} ^/(artwork|calculate|storage|save|media)/
+RewriteRule ^(.*)$ Storage/$1 [L]
+# ----------------------------------------------------------------------------------
+
+# 기본 접근 파일
+DirectoryIndex index.php
+
+# URI 컨트롤러
+Options +MultiViews
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ /index.php?/$1 [L]  # index.php 에서 모든 경로 컨트롤
+
+# php.ini 설정값 변경
+# php_value upload_max_filesize           1024M
+# php_value post_max_size                 1024M
+
+ErrorDocument 404 view/errors/404.php
+ErrorDocument 500 view/errors/500.php
