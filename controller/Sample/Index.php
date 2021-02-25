@@ -15,7 +15,6 @@ class Index extends Controller
 
     public function index()
     {
-
         $member = new Member();
         $get_members = $member->getMembers();
 

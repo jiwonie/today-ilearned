@@ -12,11 +12,11 @@ class Member extends Model
     }
 
     /**
-     * * 사용자 추가
-     * 
-     * @param array $input
-     * @return string|integer|boolean
-     */
+    * * 사용자 추가
+    * 
+    * @param array $input
+    * @return string|integer|boolean
+    */
     function insertMember(array $input = array())
     {
         if ($input['pw'] !== $input['pw_confirm']) {
@@ -38,11 +38,11 @@ class Member extends Model
     }
 
     /**
-     * * 사용자 검색
-     * 
-     * @param array $input
-     * @return array
-     */
+    * * 사용자 검색
+    * 
+    * @param array $input
+    * @return array
+    */
     function selectMember(array $input = array())
     {
         return $this->query("
@@ -60,10 +60,10 @@ class Member extends Model
     }
 
     /**
-     * * 모든 사용자 가져오기
-     * 
-     * @return array
-     */
+    * * 모든 사용자 가져오기
+    * 
+    * @return array
+    */
     function getMembers()
     {
         return $this->query("SELECT * FROM localhost.member");

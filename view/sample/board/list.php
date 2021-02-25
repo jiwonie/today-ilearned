@@ -1,19 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOARD LIST</title>
-    <style>
-        #wrap {max-width:700px;margin:0 auto;text-align:center;}
-        table {width:100%;table-layout:fixed;}
-    </style>
-</head>
-<body>
-    <div id="wrap">
-        <h1>BOARD LIST</h1>
+<div id="wrap">
+    <!-- header -->
+    <div id="header">
+        <a href="" class="title">BOARD LIST</a>
+    </div>
 
-        <table>
+    <!-- content -->
+    <div id="content">
+        <table class="board-list">
             <tr>
                 <th>no.</th>
                 <th>subject</th>
@@ -24,20 +17,20 @@
                 <?php foreach ($res['boards'] as $no => $board) { ?>
                 <tr>
                     <td><?php echo $board['idx']; ?></td>
-                    <td><a href="/board/<?php echo $board['idx']; ?>"><?php echo $board['subject']; ?></a></td>
+                    <td><a href="/board/<?php echo $board['idx']; ?>" class="subject"><?php echo $board['subject']; ?></a></td>
                     <td><?php echo $board['create_by']; ?></td>
                     <td><?php echo $board['create_at']; ?></td>
                 </tr>
                 <?php } ?>
                 <tr>
                     <td colspan="4">
-                        <a href="/board/page/<?php echo $res['paging']['prev']; ?>">&lt;</a>
+                        <a href="/board/page/<?php echo $res['paging']['prev']; ?>" class="paging">&lt;</a>
 
                         <?php for ($i = $res['paging']['first']; $i <= $res['paging']['last']; $i++) { ?>
-                        <a href="/board/page/<?php echo $i; ?>"><?php echo $i; ?></a>
+                            <a href="/board/page/<?php echo $i; ?>" class="paging <?php echo ($res['paging']['now'] ?? '1') == $i ? 'act' : '' ?>"><?php echo $i; ?></a>
                         <?php } ?>
 
-                        <a href="/board/page/<?php echo $res['paging']['next']; ?>">&gt;</a>
+                        <a href="/board/page/<?php echo $res['paging']['next']; ?>" class="paging">&gt;</a>
                     </td>
                 </tr>
             <?php } else { ?>
@@ -48,12 +41,16 @@
         </table>
 
         <div>
-            <button type="button" onclick="location.href='/'">go to index page</button>
+            <button type="button" class="btn" onclick="location.href='/'">go to index page</button>
 
             <?php if ($_SESSION['IS_LOGIN']) { ?>
-            <button type="button" onclick="location.href='/board/write'" title="write">write</button>
+            <button type="button" class="btn" onclick="location.href='/board/write'" title="write">write</button>
             <?php } ?>
         </div>
+
+        <!-- footer -->
+        <div id="footer">
+            <label>&copy; <a href="javascript:void(0)">Jiwon Min</a>. All rights reserved.</label>
+        </div>
     </div>
-</body>
-</html>
+</div>

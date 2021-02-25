@@ -12,11 +12,11 @@ class Board extends Model
     }
 
     /**
-     * * 게시글 추가
-     * 
-     * @param array $input
-     * @return string|integer|boolean
-     */
+    * * 게시글 추가
+    * 
+    * @param array $input
+    * @return string|integer|boolean
+    */
     function insertBoard(array $input = array())
     {
         if (empty($input['subject']) || !$_SESSION['IS_LOGIN']) {
@@ -38,11 +38,11 @@ class Board extends Model
     }
 
     /**
-     * * 게시글 수정
-     * 
-     * @param array $input
-     * @return string|integer|boolean
-     */
+    * * 게시글 수정
+    * 
+    * @param array $input
+    * @return string|integer|boolean
+    */
     function updateBoard(array $input = array())
     {
         if (empty($input['subject']) || !$_SESSION['IS_LOGIN']) {
@@ -67,11 +67,11 @@ class Board extends Model
     }
 
     /**
-     * * 게시글 삭제
-     * 
-     * @param array $input
-     * @return string|integer|boolean
-     */
+    * * 게시글 삭제
+    * 
+    * @param array $input
+    * @return string|integer|boolean
+    */
     function deleteBoard(array $input = array())
     {
         if (empty($input['idx']) || !$_SESSION['IS_LOGIN']) {
@@ -91,11 +91,11 @@ class Board extends Model
     }
 
     /**
-     * * 게시글 검색
-     * 
-     * @param string $idx
-     * @return array
-     */
+    * * 게시글 검색
+    * 
+    * @param string $idx
+    * @return array
+    */
     function getBoard(string $idx = '')
     {
         return $this->query("
@@ -111,11 +111,11 @@ class Board extends Model
     }
 
     /**
-     * * 전체 리스트 검색
-     * 
-     * @param string $page
-     * @return null|array
-     */
+    * * 전체 리스트 검색
+    * 
+    * @param string $page
+    * @return null|array
+    */
     function getBoardsWithPaging(string $page = '1')
     {
         $first_index    = 10 * ($page - 1);
@@ -150,7 +150,8 @@ class Board extends Model
                 'last' => $last_page, 
                 'total' => $total_page, 
                 'prev' => $prev_page, 
-                'next' => $next_page
+                'next' => $next_page,
+                'now' => $page
         );
         return $boards;
     }

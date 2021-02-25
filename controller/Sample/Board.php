@@ -15,63 +15,41 @@ class Board extends Controller
 
     public function board()
     {
-        switch ($this->__variables['board']) {
-            case 'write':
-                if (!$_SESSION['IS_LOGIN']) {
-                    $this->relocation('/board', 'You need to log in');
-                } else {
-                    $this->view('sample/board/write');
+        $post = $this->injection($_POST);
 
-                    $input  = $this->injection($_POST);
-
-                    switch ($input['_method']) {
-                        case 'post':
-                            $this->writeProcess($input);
-                            break;
-                    }
-                }
+        switch ($post['_method']) {
+            case 'post':
+                $this->writeProcess($post);
                 break;
-
-            case 'update':
-                $input = $this->injection($_POST);
-                
-                switch ($input['_method']) {
-                    case 'patch':
-                        $this->updateProcess($input);
-                        break;
-                }
+            case 'patch':
+                $this->updateProcess($post);
+                break;
+            case 'delete':
+                $this->deleteProcess($post);
                 break;
             
-            case 'delete':
-                $input = $this->injection($_POST);
-                
-                switch ($input['_method']) {
-                    case 'delete':
-                        $this->deleteProcess($input);
-                        break;
-                }
-                break;
-                
             default:
                 $board = new ModelSampleBoard();
-            
-                if (is_numeric($this->__variables['board'])) {
-                    $return = $board->getBoard($this->__variables['board'])[0];
-                    $this->view('sample/board/read', $return);
-                } else {
-                    $page   = $this->__variables['page'] ?? '1';
-                    $return = $board->getBoardsWithPaging($page);
+
+                if ($this->__variables['board'] === 'write') {
+                    $_SESSION['IS_LOGIN'] ?? $this->relocation('/board', 'You need to log in');
                     
-                    $this->view('sample/board/list', $return);
+                    $this->view('sample/board/write');
+                } else if (is_numeric($this->__variables['board'])) {
+                    $this->view('sample/board/read', $board->getBoard($this->__variables['board'])[0]);
+                } else {
+                    $this->view('sample/board/list', $board->getBoardsWithPaging($this->__variables['page'] ?? '1'));
                 }
                 break;
         }
     }
     
-    public function writeProcess($input)
+    public function writeProcess($post)
     {
+        $_SESSION['IS_LOGIN'] ?? $this->relocation('/board', 'You need to log in');
+
         $board  = new ModelSampleBoard();
-        $result = $board->insertBoard($input);
+        $result = $board->insertBoard($post);
 
         if (is_numeric($result)) {
             $this->relocation('/board', 'Post was created');
@@ -80,10 +58,12 @@ class Board extends Controller
         }
     }
 
-    public function updateProcess($input)
+    public function updateProcess($post)
     {
+        $_SESSION['IS_LOGIN'] ?? $this->relocation('/board', 'You need to log in');
+
         $board  = new ModelSampleBoard();
-        $result = $board->updateBoard($input);
+        $result = $board->updateBoard($post);
 
         if (is_numeric($result)) {
             $this->relocation('/board', "Post has been modified");
@@ -92,10 +72,12 @@ class Board extends Controller
         }
     }
 
-    public function deleteProcess($input)
+    public function deleteProcess($post)
     {
+        $_SESSION['IS_LOGIN'] ?? $this->relocation('/board', 'You need to log in');
+
         $board  = new ModelSampleBoard();
-        $result = $board->deleteBoard($input);
+        $result = $board->deleteBoard($post);
 
         if (is_numeric($result)) {
             $this->relocation('/board', "Posts have been deleted");

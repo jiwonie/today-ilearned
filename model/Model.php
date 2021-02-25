@@ -10,17 +10,17 @@ class Model
     protected $pdo;
 
     /**
-     * * config 폴더 내 데이터베이스 초기값 폴더에서 정보를 가져옴
-     * * 해당 폴더는 DOCUMENT_ROOT 밖에 위치시키거나, gitignore 및 외부 접속 불가하도록 설정 필요
-     *
-     * content ex)
-     * [database]
-     * db_host      = ''
-     * db_port      = ''
-     * db_name      = ''
-     * db_user      = ''
-     * db_password  = ''
-     */
+    * * 외부 폴더에서 데이터베이스 설정값 가져옴
+    * ! 해당 폴더는 외부 접속이 불가하도록 설정 필요
+    *
+    * (database.ini example)
+    * [database]
+    * db_host      = ''
+    * db_port      = ''
+    * db_name      = ''
+    * db_user      = ''
+    * db_password  = ''
+    */
     function __construct()
     {
         $database = parse_ini_file('./../config/database.ini');
@@ -41,14 +41,13 @@ class Model
     }
 
     /**
-     * * query 문자열을 입력받아 PDO 메소드로 실행
-     * * 입력 된 query 타입에 따라 반환되는 값을 별도 지정
-     * 
-     * @param string $query
-     * @param array $parameter
-     * 
-     * @return mixed
-     */
+    * * 입력 된 쿼리 타입에 따라 반환되는 값을 별도 지정
+    * 
+    * @param string $query
+    * @param array $parameter
+    * 
+    * @return mixed
+    */
     function query(string $query, array $parameter = array())
     {
         $query_type = strtolower(substr(trim($query), 0, 6));
@@ -78,8 +77,8 @@ class Model
     }
 
     /**
-     * * 비밀번호 입력 시, 단방향 암호화 처리
-     */
+    * * 비밀번호 입력 시, 단방향 암호화 처리
+    */
     function password(string $password):string
     {
         return base64_encode(hash('sha512', $password, true));
