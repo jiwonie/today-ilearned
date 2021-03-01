@@ -34,17 +34,65 @@ $__router = array(
     '/board'            => 'Controller\Sample\Board'
 );
 
+/*
+/board/write       (post: create)
+/board/page/2      (post: delete)
+/board/:board      (get:  read, post: delete)
+/board/:board/edit (post: update)
 
+
+
+/sports/write
+/sports/page/2
+/sports/:sports
+/sports/:sports/edit
+
+/sports/:sports/players/write
+/sports/:sports/players/page/2
+/sports/:sports/players/:players
+/sports/:sports/players/:players/edit
+
+
+/events/:events
+
+
+/boards/:boards/post/:post
+/boards/qna/post/5
+*/
+
+// get method reserved word
+define('RESERVED_WORD', [
+    'update' => [
+        'update',
+        'modify',
+        'edit'
+    ],
+    'create' => [
+        'create',
+        'generate',
+        'write'
+    ],
+    'page' => [
+        'page',
+        'p'
+    ]
+]);
+
+echo '<pre>';
+var_dump(RESERVED_WORD);
+echo '</pre>';
+
+$_SERVER['REQUEST_URI'] = '/sports/:sports/players/page/2';
 
 // ----- url parsing
 parse_str(parse_url($_SERVER['REQUEST_URI'])['query'], $_GET);
 $__rest_path = explode('/', parse_url($_SERVER['REQUEST_URI'])['path']);
 
 // get page number
-if ($__path_index = array_search('page', $__rest_path) ?? false) {
-    $__variables['page'] = $__rest_path[$__path_index + 1];
-    unset($__rest_path[$__path_index], $__rest_path[$__path_index + 1]);
-}
+// if ($__path_index = array_search('page', $__rest_path) ?? false) {
+//     $__variables['page'] = $__rest_path[$__path_index + 1];
+//     unset($__rest_path[$__path_index], $__rest_path[$__path_index + 1]);
+// }
 
 // get url last odd resource
 $__exec_func = end(
@@ -57,15 +105,39 @@ $__exec_func = end(
     )
 );
 
+
 // get url even resource
 for ($i = 2; $i < count($__rest_path); $i++) {
     if ($i % 2 === 0) {
+
+
+        foreach (RESERVED_WORD as $key => $val) {
+            if (in_array($__rest_path[$i], $val)) {
+                var_dump($key);
+            }
+        }
+        echo '<br/>';
+
+
+
         $__variables[$__rest_path[$i - 1]] = $__rest_path[$i];
     }
 }
 // end of url parsing
 
 
+echo '<pre>';
+var_dump($__rest_path);
+echo '<hr/><br/><br/>';
+
+echo '<h3>$__exec_func:</h3>';
+var_dump($__exec_func);
+
+echo '<br/><br/>';
+
+echo '<h3>$__variables: </h3>';
+var_dump($__variables);
+echo '</pre>';
 
 // url control
 if (class_exists($__router["/{$__rest_path[1]}"])) {
