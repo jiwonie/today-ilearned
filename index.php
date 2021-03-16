@@ -19,7 +19,8 @@ spl_autoload_register(function(string $class) {
         include_once $filename;
     } else {
         http_response_code(404);
-        exit('404 Not Found');
+        require 'view/errors/404.php';
+        exit;
     }
 });
 
@@ -27,121 +28,49 @@ spl_autoload_register(function(string $class) {
 
 // router setting
 $__router = array(
-    '/'                 => 'Controller\Sample\Index',
-    '/join'             => 'Controller\Sample\Member',
-    '/login'            => 'Controller\Sample\Member',
-    '/logout'           => 'Controller\Sample\Member',
-    '/board'            => 'Controller\Sample\Board'
+    ''                 => 'Controller\Index',
+    'join'             => 'Controller\Member',
+    'login'            => 'Controller\Member',
+    'logout'           => 'Controller\Member',
+    'board'            => 'Controller\Board'
 );
 
-/*
-/board/write       (post: create)
-/board/page/2      (post: delete)
-/board/:board      (get:  read, post: delete)
-/board/:board/edit (post: update)
 
-
-
-/sports/write
-/sports/page/2
-/sports/:sports
-/sports/:sports/edit
-
-/sports/:sports/players/write
-/sports/:sports/players/page/2
-/sports/:sports/players/:players
-/sports/:sports/players/:players/edit
-
-
-/events/:events
-
-
-/boards/:boards/post/:post
-/boards/qna/post/5
-*/
-
-// get method reserved word
-define('RESERVED_WORD', [
-    'update' => [
-        'update',
-        'modify',
-        'edit'
-    ],
-    'create' => [
-        'create',
-        'generate',
-        'write'
-    ],
-    'page' => [
-        'page',
-        'p'
-    ]
-]);
-
-echo '<pre>';
-var_dump(RESERVED_WORD);
-echo '</pre>';
-
-$_SERVER['REQUEST_URI'] = '/sports/:sports/players/page/2';
 
 // ----- url parsing
 parse_str(parse_url($_SERVER['REQUEST_URI'])['query'], $_GET);
-$__rest_path = explode('/', parse_url($_SERVER['REQUEST_URI'])['path']);
+$__path = explode('/', parse_url($_SERVER['REQUEST_URI'])['path']);
+$__root = $__path[1];
 
-// get page number
-// if ($__path_index = array_search('page', $__rest_path) ?? false) {
-//     $__variables['page'] = $__rest_path[$__path_index + 1];
-//     unset($__rest_path[$__path_index], $__rest_path[$__path_index + 1]);
-// }
-
-// get url last odd resource
-$__exec_func = end(
-    array_filter(
-        $__rest_path, 
-        function ($get_odd_index) {
-            return $get_odd_index & 1;
-        }, 
-        ARRAY_FILTER_USE_KEY
-    )
-);
 
 
 // get url even resource
-for ($i = 2; $i < count($__rest_path); $i++) {
-    if ($i % 2 === 0) {
+for ($i = 0; $i < count($__path); $i++) {
+    switch ($__path[$i]) {
+        case 'page': 
+            $__var['page'] = $__path[$i + 1];
+            break;
+        case 'write': 
+            $__var['writable'] = true;
+            break;
+        case 'edit': 
+            $__var['editable'] = true;
+            break;
+        default: 
+            $__var[$__path[$i - 1]] = $__path[$i];
 
-
-        foreach (RESERVED_WORD as $key => $val) {
-            if (in_array($__rest_path[$i], $val)) {
-                var_dump($key);
+            if (!is_numeric($__path[$i]) && ($i & 1)) {
+                $__var['method'] = $__path[$i];
             }
-        }
-        echo '<br/>';
-
-
-
-        $__variables[$__rest_path[$i - 1]] = $__rest_path[$i];
+            break;
     }
 }
-// end of url parsing
 
 
-echo '<pre>';
-var_dump($__rest_path);
-echo '<hr/><br/><br/>';
-
-echo '<h3>$__exec_func:</h3>';
-var_dump($__exec_func);
-
-echo '<br/><br/>';
-
-echo '<h3>$__variables: </h3>';
-var_dump($__variables);
-echo '</pre>';
 
 // url control
-if (class_exists($__router["/{$__rest_path[1]}"])) {
-    new $__router["/{$__rest_path[1]}"]($__exec_func, $__variables);
+if (class_exists($__router[$__root])) {
+    new $__router[$__root]($__var);
 } else {
     http_response_code(404);
     require 'view/errors/404.php';

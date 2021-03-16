@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>php-easymvc</title>
-    <link rel="stylesheet" type="text/css" href="/view/sample/assets/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="/view/assets/css/common.css" />
 
     <noscript><div id="noscript">Your browser does not support JavaScript!</div></noscript>
 </head>

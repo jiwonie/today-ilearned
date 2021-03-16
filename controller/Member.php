@@ -1,16 +1,15 @@
 <?php
 
-namespace Controller\Sample;
+namespace Controller;
 
-use Controller\Controller;
-use Model\Sample\Member as ModelSampleMember;
+use Model\Member as ModelMember;
 
 class Member extends Controller
 {
-    public function __construct($__exec_func = '/', $__variables = [])
+    public function __construct($__variables = [])
     {
-        parent::__construct($__exec_func, $__variables);
-        $this->{$this->__exec_func}();
+        parent::__construct($__variables);
+        $this->{$this->__variables['method']}();
     }
 
     public function join()
@@ -23,14 +22,14 @@ class Member extends Controller
                 break;
 
             default:
-                $this->view('sample/sign/up');
+                $this->view('sign/up');
                 break;
         }
     }
 
     public function joinProcess($input)
     {
-        $member   = new ModelSampleMember();
+        $member   = new ModelMember();
         $result = $member->insertMember($input);
 
         if (is_numeric($result)) {
@@ -49,14 +48,14 @@ class Member extends Controller
                 $this->loginProcess($input);
                 break;
             default:
-                $this->view('sample/sign/in');
+                $this->view('sign/in');
                 break;
         }
     }
     
     public function loginProcess($input)
     {
-        $member   = new ModelSampleMember();
+        $member   = new ModelMember();
         $result = $member->selectMember($input);
 
         if (isset($result[0]['id']) && !empty($result[0]['id'])) {

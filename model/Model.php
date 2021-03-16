@@ -5,51 +5,105 @@ namespace Model;
 use PDO;
 use PDOException;
 
-class Model 
+class Model
 {
-    protected $pdo;
+    protected $conn;
 
-    /**
-    * * 외부 폴더에서 데이터베이스 설정값 가져옴
-    * ! 해당 폴더는 외부 접속이 불가하도록 설정 필요
-    *
-    * (database.ini example)
-    * [database]
-    * db_host      = ''
-    * db_port      = ''
-    * db_name      = ''
-    * db_user      = ''
-    * db_password  = ''
-    */
-    function __construct()
+    public function __construct($database = 'mysql')
     {
-        $database = parse_ini_file('./../config/database.ini');
+        $_ini = parse_ini_file('./../config/database.ini', true, INI_SCANNER_RAW)[$database];
 
         try {
-            $this->pdo = new PDO(
-                "mysql:host={$database['db_host']};dbname={$database['db_name']}", 
-                $database['db_user'], 
-                $database['db_password']
-            );
-
-            $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $dsn = "mysql:host={$_ini["host"]};dbname={$_ini["dbname"]}";
+            $options = [
+                PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$_ini['charset']}"
+            ];
+            
+            $this->conn = new PDO($dsn, $_ini["username"], $_ini["password"], $options);
         } catch (PDOException $e) {
             http_response_code(500);
+            require 'view/errors/500.php';
             exit('Please set up the DB');
         }
     }
 
-    /**
-    * * 입력 된 쿼리 타입에 따라 반환되는 값을 별도 지정
-    * 
-    * @param string $query
-    * @param array $parameter
-    * 
-    * @return mixed
-    */
+    function select(string $table = "board", string $where = "true", string $target = "*", array $execute = []):array
+    {
+        $result = [];
+
+        try {
+            $prepared = $this->conn->prepare("SELECT $target FROM $table WHERE $where");
+            $prepared->execute($execute);
+
+            $result = $prepared->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            require 'view/errors/500.php';
+            exit('Query error ' . $e->getCode());
+        }
+
+        return $result;
+    }
+
+    function insert(string $table = "", string $parameters = "", array $execute = [])
+    {
+        $result = false;
+
+        try {
+            $prepared = $this->conn->prepare("INSERT INTO $table SET $parameters");
+            $prepared->execute($execute);
+
+            $result = $this->conn->lastInsertId();
+        } catch (PDOException $e) {
+            http_response_code(500);
+            require 'view/errors/500.php';
+            exit('Query error ' . $e->getCode());
+        }
+
+        return $result;
+    }
+
+    function update(string $table = "", string $parameters = "", string $where = "true", array $execute = [])
+    {
+        $result = false;
+
+        try {
+            $prepared = $this->conn->prepare("UPDATE $table SET $parameters WHERE $where");
+            $prepared->execute($execute);
+
+            $result = $prepared->rowCount();
+        } catch (PDOException $e) {
+            http_response_code(500);
+            require 'view/errors/500.php';
+            exit('Query error ' . $e->getCode());
+        }
+
+        return $result;
+    }
+
+    function delete(string $table = "", string $where = "true", array $execute = [])
+    {
+        $result = false;
+        
+        try {
+            $prepared = $this->conn->prepare("DELETE FROM $table WHERE $where");
+            $prepared->execute($execute);
+
+            $result = $prepared->rowCount();
+        } catch (PDOException $e) {
+            http_response_code(500);
+            require 'view/errors/500.php';
+            exit('Query error ' . $e->getCode());
+        }
+
+        return $result;
+    }
+
     function query(string $query, array $parameter = array())
     {
+        $result = false;
         $query_type = strtolower(substr(trim($query), 0, 6));
 
         try {
@@ -57,28 +111,28 @@ class Model
             $statement->execute($parameter);
         } catch (PDOException $e) {
             http_response_code(500);
-            exit("Query error [{$e->getCode()}]");
+            require 'view/errors/500.php';
+            exit('Query error ' . $e->getCode());
         }
 
         switch ($query_type) {
             case 'insert':
-                return $this->pdo->lastInsertId();
+                $result = $this->pdo->lastInsertId();
             break;
 
             case 'select': 
-                return $statement->fetchAll(PDO::FETCH_ASSOC);
+                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
             break;
             
             case 'update':
             case 'delete':
-                return $statement->rowCount();
+                $result = $statement->rowCount();
             break;
         }
+
+        return $result;
     }
 
-    /**
-    * * 비밀번호 입력 시, 단방향 암호화 처리
-    */
     function password(string $password):string
     {
         return base64_encode(hash('sha512', $password, true));

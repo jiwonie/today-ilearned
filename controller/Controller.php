@@ -4,16 +4,15 @@ namespace Controller;
 
 class Controller
 {
-    protected $__exec_func;
     protected $__variables;
 
     /**
     * * REQUEST_URI 값에 따라서 실행 될 함수 지정
     * * '/' 요청이 오면 index 함수가 실행 될 수 있도록 별도 지정
     */
-    public function __construct($__exec_func = '/', $__variables = [])
+    public function __construct($__variables = [])
     {   
-        $this->__exec_func = $__exec_func ?: 'index';
+        $__variables['method'] = $__variables['method'] ?: 'index';
         $this->__variables = $__variables;
     }
 
@@ -26,7 +25,7 @@ class Controller
     * @param string $header
     * @param string $footer
      */
-    public function view(string $req, array $res = array(), string $header = 'sample/assets/includes/header', string $footer = 'sample/assets/includes/footer')
+    public function view(string $req, array $res = array(), string $header = 'assets/includes/header', string $footer = 'assets/includes/footer')
     {
         if (is_file("view/{$req}.php") && is_file("view/{$header}.php") && is_file("view/{$footer}.php")) {
             include_once "view/{$header}.php";

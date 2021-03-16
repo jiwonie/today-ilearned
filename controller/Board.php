@@ -1,16 +1,15 @@
 <?php
 
-namespace Controller\Sample;
+namespace Controller;
 
-use Controller\Controller;
-use Model\Sample\Board as ModelSampleBoard;
+use Model\Board as ModelBoard;
 
 class Board extends Controller
 {
-    public function __construct($__exec_func = '/', $__variables = [])
+    public function __construct($__variables = [])
     {
-        parent::__construct($__exec_func, $__variables);
-        $this->{$this->__exec_func}();
+        parent::__construct($__variables);
+        $this->{$this->__variables['method']}();
     }
 
     public function board()
@@ -29,16 +28,16 @@ class Board extends Controller
                 break;
             
             default:
-                $board = new ModelSampleBoard();
+                $board = new ModelBoard();
 
-                if ($this->__variables['board'] === 'write') {
+                if ($this->__variables['writable']) {
                     $_SESSION['IS_LOGIN'] ?? $this->relocation('/board', 'You need to log in');
                     
-                    $this->view('sample/board/write');
+                    $this->view('board/write');
                 } else if (is_numeric($this->__variables['board'])) {
-                    $this->view('sample/board/read', $board->getBoard($this->__variables['board'])[0]);
+                    $this->view('board/read', $board->getBoard($this->__variables['board'])[0]);
                 } else {
-                    $this->view('sample/board/list', $board->getBoardsWithPaging($this->__variables['page'] ?? '1'));
+                    $this->view('board/list', $board->getBoardsWithPaging($this->__variables['page'] ?? '1'));
                 }
                 break;
         }
@@ -48,7 +47,7 @@ class Board extends Controller
     {
         $_SESSION['IS_LOGIN'] ?? $this->relocation('/board', 'You need to log in');
 
-        $board  = new ModelSampleBoard();
+        $board  = new ModelBoard();
         $result = $board->insertBoard($post);
 
         if (is_numeric($result)) {
@@ -62,7 +61,7 @@ class Board extends Controller
     {
         $_SESSION['IS_LOGIN'] ?? $this->relocation('/board', 'You need to log in');
 
-        $board  = new ModelSampleBoard();
+        $board  = new ModelBoard();
         $result = $board->updateBoard($post);
 
         if (is_numeric($result)) {
@@ -76,7 +75,7 @@ class Board extends Controller
     {
         $_SESSION['IS_LOGIN'] ?? $this->relocation('/board', 'You need to log in');
 
-        $board  = new ModelSampleBoard();
+        $board  = new ModelBoard();
         $result = $board->deleteBoard($post);
 
         if (is_numeric($result)) {
