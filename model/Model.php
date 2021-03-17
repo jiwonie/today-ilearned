@@ -107,7 +107,7 @@ class Model
         $query_type = strtolower(substr(trim($query), 0, 6));
 
         try {
-            $statement = $this->pdo->prepare($query);
+            $statement = $this->conn->prepare($query);
             $statement->execute($parameter);
         } catch (PDOException $e) {
             http_response_code(500);
@@ -117,7 +117,7 @@ class Model
 
         switch ($query_type) {
             case 'insert':
-                $result = $this->pdo->lastInsertId();
+                $result = $this->conn->lastInsertId();
             break;
 
             case 'select': 
