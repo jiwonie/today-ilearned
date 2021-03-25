@@ -8,7 +8,19 @@ use PDOException;
 class Model
 {
     protected $conn;
-
+    
+    /**
+    * * 외부 폴더에서 데이터베이스 설정값 가져옴
+    * ! 해당 폴더는 외부 접속이 불가하도록 설정 필요
+    *
+    * (database.ini example)
+    * [database]
+    * db_host      = ''
+    * db_port      = ''
+    * db_name      = ''
+    * db_user      = ''
+    * db_password  = ''
+    */
     public function __construct($database = 'mysql')
     {
         $_ini = parse_ini_file('./../config/database.ini', true, INI_SCANNER_RAW)[$database];

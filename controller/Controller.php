@@ -11,9 +11,31 @@ class Controller
     * * '/' 요청이 오면 index 함수가 실행 될 수 있도록 별도 지정
     */
     public function __construct($__variables = [])
-    {   
-        $__variables['method'] = $__variables['method'] ?: 'index';
-        $this->__variables = $__variables;
+    {
+        if (isset($__variables['path']) && !empty($__variables['path'])) {
+            // for basic url
+            $request_uri = array_values(
+                array_map(
+                    'trim', 
+                    array_filter(explode('/', $__variables['path']))
+                )
+            ) ?: array('index');
+
+            foreach ($request_uri as $key => $val) {
+                if ($key === array_key_first($request_uri)) {
+                    $__variables['method'] .= $val;
+                } else {
+                    $__variables['method'] .= ucwords($val);
+                }
+            }
+
+            $this->__variables = $__variables;
+        } else {
+
+            // for restful url
+            $__variables['method'] = $__variables['method'] ?: 'index';
+            $this->__variables = $__variables;
+        }
     }
 
     /**

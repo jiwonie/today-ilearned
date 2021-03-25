@@ -14,6 +14,7 @@ class Board extends Controller
 
     public function board()
     {
+        $get  = $this->injection($_GET);
         $post = $this->injection($_POST);
 
         switch ($post['_method']) {
@@ -31,15 +32,41 @@ class Board extends Controller
                 $board = new ModelBoard();
 
                 if ($this->__variables['writable']) {
+
+                    // for restful url (write page)
                     $_SESSION['IS_LOGIN'] ?? $this->relocation('/board', 'You need to log in');
-                    
                     $this->view('board/write');
+
                 } else if (is_numeric($this->__variables['board'])) {
+
+                    // for restful url (detail page)
                     $this->view('board/read', $board->getBoard($this->__variables['board'])[0]);
+
+                } else if (is_numeric($get['no'])) {
+
+                    // for basic url (get method : detail page)
+                    $this->view('board/read', $board->getBoard($get['no'])[0]);
+
                 } else {
+
+                    // for restful url (paging)
                     $this->view('board/list', $board->getBoardsWithPaging($this->__variables['page'] ?? '1'));
+
+                    // for basic url (get method : paging)
+                    // $this->view('board/list', $board->getBoardsWithPaging($get['p'] ?? '1'));
+
                 }
                 break;
+        }
+    }
+
+    public function boardWrite()
+    {
+        // for basic url (write page)
+        if (!$_SESSION['IS_LOGIN']) {
+            $this->relocation('/board', 'You need to log in');
+        } else {
+            $this->view('board/write');
         }
     }
     
