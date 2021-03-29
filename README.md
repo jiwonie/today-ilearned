@@ -22,3 +22,4 @@ __docker references__
  - `docker run --name "project" -p "80:80" -v /c/dev/workspace/project:/var/www/html mattrayner/lamp:latest`
  - `mysql -uadmin -p<PASSWORD> -h<HOST> -P<PORT>`
  - `localhost/phpmyadmin/index.php`
+
