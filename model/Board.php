@@ -4,6 +4,10 @@ namespace Model;
 
 class Board extends Model
 {
+    /**
+     * @param array $input
+     * @return bool|int
+     */
     function insertBoard(array $input = array())
     {
         if (empty($input['subject']) || !$_SESSION['IS_LOGIN']) {
@@ -17,6 +21,10 @@ class Board extends Model
         );
     }
 
+    /**
+     * @param array $input
+     * @return bool|int
+     */
     function updateBoard(array $input = array())
     {
         if (empty($input['subject']) || !$_SESSION['IS_LOGIN']) {
@@ -30,6 +38,10 @@ class Board extends Model
         );
     }
 
+    /**
+     * @param array $input
+     * @return bool|int
+     */
     function deleteBoard(array $input = array())
     {
         if (empty($input['idx']) || !$_SESSION['IS_LOGIN']) {
@@ -39,11 +51,19 @@ class Board extends Model
         return $this->delete("board", "idx = :idx AND create_by = :create_by", [":idx" => $input["idx"], ":create_by" => $_SESSION["LOGIN_ID"]]);
     }
 
+    /**
+     * @param string $idx
+     * @return array
+     */
     function getBoard(string $idx = '')
     {
         return $this->select("board", "idx = :idx", "*", [":idx" => $idx]);
     }
 
+    /**
+     * @param string $page
+     * @return array
+     */
     function getBoardsWithPaging(string $page = '1')
     {
         $first_index    = 10 * ($page - 1);

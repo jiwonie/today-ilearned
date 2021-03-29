@@ -12,9 +12,9 @@ class Member extends Controller
         $this->{$this->__variables['method']}();
     }
 
-    public function join()
+    public function join():void
     {
-        $input  = $this->injection($_POST);
+        $input = $this->injection($_POST);
 
         switch ($input['_method']) {
             case 'post':
@@ -27,9 +27,9 @@ class Member extends Controller
         }
     }
 
-    public function joinProcess($input)
+    public function joinProcess(array $input):void
     {
-        $member   = new ModelMember();
+        $member = new ModelMember();
         $result = $member->insertMember($input);
 
         if (is_numeric($result)) {
@@ -39,7 +39,7 @@ class Member extends Controller
         }
     }
 
-    public function login()
+    public function login():void
     {
         $input = $this->injection($_POST);
         
@@ -53,9 +53,9 @@ class Member extends Controller
         }
     }
     
-    public function loginProcess($input)
+    public function loginProcess(array $input):void
     {
-        $member   = new ModelMember();
+        $member = new ModelMember();
         $result = $member->selectMember($input);
 
         if (isset($result[0]['id']) && !empty($result[0]['id'])) {
@@ -69,7 +69,7 @@ class Member extends Controller
         }
     }
 
-    public function logout()
+    public function logout():void
     {
         session_destroy();
         $this->relocation('/', 'You are logged out');

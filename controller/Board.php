@@ -12,7 +12,7 @@ class Board extends Controller
         $this->{$this->__variables['method']}();
     }
 
-    public function board()
+    public function board():void
     {
         $get  = $this->injection($_GET);
         $post = $this->injection($_POST);
@@ -33,36 +33,41 @@ class Board extends Controller
 
                 if ($this->__variables['writable']) {
 
-                    // for restful url (write page)
+                    // 쓰기 페이지
+                    // for RESTFUL_API
                     $_SESSION['IS_LOGIN'] ?? $this->relocation('/board', 'You need to log in');
                     $this->view('board/write');
 
                 } else if (is_numeric($this->__variables['board'])) {
 
-                    // for restful url (detail page)
+                    // 상세 페이지
+                    // for RESTFUL_API
                     $this->view('board/read', $board->getBoard($this->__variables['board'])[0]);
 
                 } else if (is_numeric($get['no'])) {
 
-                    // for basic url (get method : detail page)
+                    // 상세 페이지 ($_GET 메소드 활용, 예시로 작성함)
+                    // for NORMAL_URL
                     $this->view('board/read', $board->getBoard($get['no'])[0]);
 
                 } else {
 
-                    // for restful url (paging)
+                    // 글 목록 페이지
+                    // for RESTFUL_API
                     $this->view('board/list', $board->getBoardsWithPaging($this->__variables['page'] ?? '1'));
 
-                    // for basic url (get method : paging)
+                    // 글 목록 페이지 ($_GET 메소드 활용, 예시로 작성함)
+                    // for NORMAL_URL
                     // $this->view('board/list', $board->getBoardsWithPaging($get['p'] ?? '1'));
-
                 }
                 break;
         }
     }
 
-    public function boardWrite()
+    public function boardWrite():void
     {
-        // for basic url (write page)
+        // 쓰기 페이지 (예시로 작성함)
+        // for NORMAL_URL
         if (!$_SESSION['IS_LOGIN']) {
             $this->relocation('/board', 'You need to log in');
         } else {
@@ -70,7 +75,7 @@ class Board extends Controller
         }
     }
     
-    public function writeProcess($post)
+    public function writeProcess(array $post):void
     {
         $_SESSION['IS_LOGIN'] ?? $this->relocation('/board', 'You need to log in');
 
@@ -84,7 +89,7 @@ class Board extends Controller
         }
     }
 
-    public function updateProcess($post)
+    public function updateProcess(array $post):void
     {
         $_SESSION['IS_LOGIN'] ?? $this->relocation('/board', 'You need to log in');
 
@@ -98,7 +103,7 @@ class Board extends Controller
         }
     }
 
-    public function deleteProcess($post)
+    public function deleteProcess(array $post):void
     {
         $_SESSION['IS_LOGIN'] ?? $this->relocation('/board', 'You need to log in');
 

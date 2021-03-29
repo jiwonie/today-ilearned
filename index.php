@@ -1,6 +1,7 @@
 <?php
 
 
+
 // session start
 session_start();
 
@@ -50,7 +51,7 @@ parse_str($__parse_url['query'], $_GET);
 
 
 
-// get url even resource (for restful url)
+// get url even resource (for RESTFUL_API)
 for ($i = 0; $i < count($__restful_path); $i++) {
     switch ($__restful_path[$i]) {
         case 'page': 
@@ -77,12 +78,12 @@ for ($i = 0; $i < count($__restful_path); $i++) {
 // url control
 if (class_exists($__router[$__parse_url['path']])) {
 
-    // for basic url
+    // for NORMAL_URL
     new $__router[$__parse_url['path']]($__parse_url);
 
 } else if (class_exists($__router[$__restful_root])) {
 
-    // for restful url
+    // for RESTFUL_API
     new $__router[$__restful_root]($__var);
 
 } else {

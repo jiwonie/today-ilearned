@@ -12,7 +12,7 @@ class Index extends Controller
         $this->{$this->__variables['method']}();
     }
 
-    public function index()
+    public function index():void
     {
         $member = new Member();
         $get_members = $member->getMembers();
